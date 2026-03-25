@@ -77,6 +77,15 @@ Next we need to edit the files in the `src/data` folder to set the URL of the ap
 
 **take care to change the port number not just the domain name**
 
+You can try running this command to automate this:
+
+```
+grep -rl "http://localhost:8080" src/data | xargs sed -i "s#http://localhost:8080#http://$(curl -s ifconfig.me):8100#g"
+```
+
+Or edit the files manually!
+
+
 Then we can continue the process:
 ```
 npm run build
