@@ -50,7 +50,7 @@ cd bam-ui
 nvm install node
 npm install
 
-grep -rl "http://localhost:8080" src/data | xargs sed -i "s#http://localhost:8080#http://$(curl -s ifconfig.me):8100#g"
+grep -rl "http://localhost:8080" src/data | xargs sed -i "s#http://localhost:8080#http://$(curl -s ifconfig.me):8081#g"
 
 npm run build
 docker build -t localhost:5001/bam-ui:1.0  .
