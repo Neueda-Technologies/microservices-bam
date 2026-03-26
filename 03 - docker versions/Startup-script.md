@@ -80,7 +80,7 @@ Next we need to edit the files in the `src/data` folder to set the URL of the ap
 You can try running this command to automate this:
 
 ```
-grep -rl "http://localhost:8080" src/data | xargs sed -i "s#http://localhost:8080#http://$(curl -s ifconfig.me):8100#g"
+grep -rl "http://localhost:8080" src/data | xargs sed -i "s#http://localhost:8080#http://$(curl -s ifconfig.me):8081#g"
 ```
 
 Or edit the files manually!
