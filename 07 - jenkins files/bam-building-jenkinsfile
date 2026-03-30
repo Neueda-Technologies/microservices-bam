@@ -1,7 +1,7 @@
 pipeline {
     agent any
     environment {
-            GIT_URL = "https://github.com/Neueda-Technologies/microservices-bam"
+            GIT_URL = "https://github.com/Neueda-Technologies/microservices-bam.git"
             IMAGE_NAME = "bam-building"
             DBPASSWORD = credentials('DBPASSWORD')
             K8S_CONTROL_PLANE = "localhost:5001"
