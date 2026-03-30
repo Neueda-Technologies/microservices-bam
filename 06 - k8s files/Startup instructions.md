@@ -61,7 +61,7 @@ EOF
 
 ## Step 2 - clone the repo
 ```
-git clone https://github.com/vppmatt/microservices-bam.git
+git clone https://github.com/Neueda-Technologies/microservices-bam
 cd microservices-bam/06\ -\ k8s\ files/
 ```
 

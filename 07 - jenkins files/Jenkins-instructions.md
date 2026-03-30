@@ -39,7 +39,7 @@ We don't want to store passwords in our files so we'll safely store this in Jenk
 3. Give the job the name "bam-building" and choose "Pipeline" as the item type, then click on OK
 4. Scroll down to the Pipeline section and change the Definition to "Pipeline script from SCM"
 5. Set the SCM to "Git"
-6. Set the repository URL to "https://github.com/vppmatt/microservices-bam"
+6. Set the repository URL to "https://github.com/Neueda-Technologies/microservices-bam"
 7. Scroll down to the Branches to build section and set this to "main"
 8. Scroll down to the Script Path and set this to "07 - jenkins files/bam-building-jenkinsfile"
 9. Leave all other settings at the default and click on Save

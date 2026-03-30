@@ -2,7 +2,7 @@
 
 ## Step 1 - clone the repo
 ```
-git clone https://github.com/vppmatt/microservices-bam.git
+git clone https://github.com/Neueda-Technologies/microservices-bam
 cd microservices-bam/03\ -\ docker\ versions/
 ```
 
