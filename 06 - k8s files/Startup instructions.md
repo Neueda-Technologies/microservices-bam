@@ -179,7 +179,7 @@ npm install
 Next we need to edit the files in the `src/data` folder to set the URL of the api gateway.
 
 ```
-grep -rl "http://localhost:8080" src/data | xargs sed -i "s#http://localhost:8080#http://$(curl -s ifconfig.me):8100#g"
+grep -rl "http://localhost:8080" src/data | xargs sed -i "s#http://localhost:8080#http://$(hostname -I | awk '{print $1}'):8081#g"
 ```
 
 Now we can continue the build process:
