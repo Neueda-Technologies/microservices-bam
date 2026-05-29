@@ -1,5 +1,13 @@
 # Set up a Jenkins CI pipeline
 
+## Step 0 - Start Jenkins
+
+1. From the Linux command line start the Jenkins applicaiton by executing:
+
+```bash
+sudo systemctl start jenkins
+```
+
 ## Step 1 -Log onto Jenkins
 
 1. Visit http://your-linux-server:8080 
