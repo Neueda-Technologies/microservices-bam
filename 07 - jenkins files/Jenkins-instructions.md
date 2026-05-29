@@ -2,7 +2,7 @@
 
 ## Step 0 - Start Jenkins
 
-1. From the Linux command line start the Jenkins applicaiton by executing:
+1. From the Linux command line start the Jenkins application by executing:
 
 ```bash
 sudo systemctl start jenkins
