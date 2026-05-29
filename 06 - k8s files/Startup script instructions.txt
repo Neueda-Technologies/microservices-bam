@@ -1,3 +1,4 @@
 - copy the 2 startup scripts to the home folder (above the cloned repo) 
 - make the 2 scripts runnable
 - run the first script and then the 2nd script. 
+- watch the pods go live - note that the bam-access pod will crash and restart until the bam-user pod is running
