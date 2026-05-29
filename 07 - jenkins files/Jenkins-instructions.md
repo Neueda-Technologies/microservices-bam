@@ -54,6 +54,10 @@ We don't want to store passwords in our files so we'll safely store this in Jenk
 
 ## Step 5 - run the pipeline
 
+We will pretend that there has been a change to the REPO and we now want to deploy this change. The pipeline will pull the latest version of main, build a new image and deploy it to our Kubernetes cluster.
+
+NOTE - before starting this section you may wish to run `watch kubectl get po` to see the new container being deployed
+
 1. Click on the Build now button on the left menu
 
 Then to watch the logs:
@@ -61,14 +65,9 @@ Then to watch the logs:
 2. Click on the timestamp for the build id in the builds window below the left menu
 3. Click on console output from the left menu
 
-## Step 6 - deploy the change
+## Step 6 - final checks
 
-NOTE - before starting this section you may wish to run `watch kubectl get po` to see the new container being deployed
-
-### get the tag number for the latest image for bam building
-
-`docker image ls`
-
-### implement the changed image:
-
-`kubectl set image deployment/bam-building bam-building=bam-building:3`
+1. Get the name of the current pod with `kubectl get po`
+2. Find out which version of the pod is running with `kubectl describe po <pod_name>`
+3. Note that this will probably be version 1 - it's the first time the pipeline ran so the build number is 1. 
+4. Run the pipeline again and repeat the exercise, the image should now be version 2. 
