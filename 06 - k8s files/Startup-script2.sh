@@ -47,7 +47,6 @@ kubectl apply -f deploy.yaml
 
 cd ..
 cd bam-ui
-nvm install node
 npm install
 
 grep -rl "http://localhost:8080" src/data | xargs sed -i "s#http://localhost:8080#http://$(hostname -I | awk '{print $1}'):8081#g"
@@ -60,7 +59,7 @@ kubectl apply -f deploy.yaml
 
 echo "Setup complete"
 
-#kubectl port-forward svc/bam-ui 8081:80 --address 0.0.0.0 &
-#kubectl port-forward svc/bam-apigateway 8100:8080 --address 0.0.0.0 &
+kubectl port-forward svc/bam-ui 8081:80 --address 0.0.0.0 &
+kubectl port-forward svc/bam-apigateway 8100:8080 --address 0.0.0.0 &
 
 
