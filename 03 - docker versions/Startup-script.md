@@ -73,9 +73,9 @@ sudo dnf install -y nodejs
 npm install
 ```
 
-Next we need to edit the files in the `src/data` folder to set the URL of the api gateway. For example if your linux server is called server1.neueda.com, set this line in each of the files:
+Next we need to edit the files in the `src/data` folder to set the URL of the api gateway. For example if your linux server has an IP address of 11.22.33.44, set this line in each of the files:
 
-`const serverUrl = "http://server1.neueda.com:8081"`
+`const serverUrl = "http://11.22.33.44:8081"`
 
 **take care to change the port number not just the domain name**
 
@@ -96,6 +96,6 @@ docker run -d --name bam-ui --network bam -p8100:80 bam-ui:1.0
 ```
 
 ## Step 9 - test
-Visit the url - we have exposed port 8100, so if your server is server1.neueda.com, then visit:
+Visit the url - we have exposed port 8100, so if your server has IP address of 11.22.33.44, then visit:
 
-http://server1.neueda.com:8100
+http://11.22.33.44:8100
