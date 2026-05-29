@@ -49,7 +49,7 @@ cd ..
 cd bam-ui
 npm install
 
-grep -rl "http://localhost:8080" src/data | xargs sed -i "s#http://localhost:8080#http://$(hostname -I | awk '{print $1}'):8100#g"
+grep -rl "http://localhost:8080" src/data | xargs sed -i "s#http://localhost:8080#http://$(hostname -I | awk '{print $1}'):8081#g"
 
 
 npm run build

@@ -2,3 +2,7 @@
 - make the 2 scripts runnable
 - run the first script and then the 2nd script. 
 - watch the pods go live - note that the bam-access pod will crash and restart until the bam-user pod is running
+
+Note that the last 2 lines of the 2nd script set up port forwarding. 
+These won't work until after all the pods are live, so re-run these lines manually once all pods are up. 
+As a reminder, you can watch the pods come up with "watch kubectl get po"
