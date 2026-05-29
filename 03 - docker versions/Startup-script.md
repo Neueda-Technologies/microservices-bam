@@ -67,7 +67,9 @@ docker run -d --name bam-access --network bam bam-access:1.0
 ```
 cd ..
 cd bam-ui
-nvm install --lts
+sudo dnf update -y
+curl -fsSL https://rpm.nodesource.com/setup_20.x | sudo bash -
+sudo dnf install -y nodejs
 npm install
 ```
 
