@@ -4,9 +4,8 @@ import jakarta.jms.ConnectionFactory;
 import org.apache.activemq.ActiveMQConnectionFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
-import 
 import org.springframework.context.annotation.Configuration;
-org.springframework.jms.config.DefaultJmsListenerContainerFactory;
+import org.springframework.jms.config.DefaultJmsListenerContainerFactory;
 
 //@Configuration
 public class MessagingServerConfig {
