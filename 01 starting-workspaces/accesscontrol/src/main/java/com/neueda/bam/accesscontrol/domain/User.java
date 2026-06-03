@@ -5,6 +5,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.ManyToMany;
 
 import java.util.List;
+import java.util.ArrayList;
 import java.util.Objects;
 
 @Entity
@@ -16,7 +17,7 @@ public class User {
     private String email;
 
     @ManyToMany
-    private List<AccessGroup> accessGroups;
+    private List<AccessGroup> accessGroups = new ArrayList<>();
 
     public Integer getId() {
         return id;
