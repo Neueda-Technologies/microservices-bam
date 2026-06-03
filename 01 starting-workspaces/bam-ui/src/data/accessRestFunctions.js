@@ -34,5 +34,5 @@ export const removeUserFromAccessGroup = (userId, accessGroupId) => {
 }
 
 export const getUser = (id) => {
-    return axios({url : `${serverUrl}/api/accessgroupuser/`+id, method: "GET"})
+    return axios({url : `${serverUrl}/api/user/`+id, method: "GET"})
 }
