@@ -1,73 +1,157 @@
-# Set up a Jenkins CI pipeline
+# Lab: Setting up a Jenkins CI/CD Pipeline
 
-## Step 0 - Start Jenkins
+## What you'll learn
 
-1. From the Linux command line start the Jenkins application by executing:
+In this lab you will set up a Jenkins pipeline that automatically builds, tests, and deploys a microservice to your Kubernetes cluster. By the end you will understand:
+
+- How Jenkins connects to your source code repository
+- How credentials (passwords, config files) are stored securely in Jenkins
+- How a Jenkinsfile defines the stages of a CI/CD pipeline
+- How to trigger a build and verify the deployment
+
+## Prerequisites
+
+Before starting this lab, make sure you have:
+
+- The microservices application deployed and running (completed the k8s deployment from `06 - k8s files`)
+- Kubernetes cluster running — verify with `kubectl get nodes`
+- Docker running — verify with `docker ps`
+- The local Docker registry running on port 5001 — verify with `curl -s http://localhost:5001/v2/_catalog`
+- Jenkins installed on your Linux server
+
+## Step 1 — Start Jenkins
+
+From the Linux command line, start Jenkins:
 
 ```bash
 sudo systemctl start jenkins
 ```
 
-## Step 1 -Log onto Jenkins
+Verify it's running:
 
-1. Visit http://your-linux-server:8080 
-2. Log in with the username admin and the password that we use for the Windows VMs.
+```bash
+sudo systemctl status jenkins
+```
 
-## Step 2 - configure the database password in Jenkins
+You should see `active (running)` in the output. If not, ask your instructor for help.
 
-We don't want to store passwords in our files so we'll safely store this in Jenkins 
+## Step 2 — Log in to Jenkins
 
-1. Click on the "manage Jenkins" cog icon at the top right of the screen
-2. In the "Security" section click on "Configure credentials"
-3. Click on "(global)" in the domains column
-4. Click on the "+ Add Credentials" button
-5. Set the Kind to "Secret text"
-6. Set the Scope to "Global"
-7. Set the Secret to the password for your database
-8. Set the id to "DBPASSWORD"
-9. Click on the "Create" button
+1. Open a browser and go to `http://<your-linux-server-ip>:8080`
+2. Log in with username `admin` and the password provided by your instructor
 
-## Step 3 - configure kubernetes in Jenkins
+You should see the Jenkins dashboard.
 
-1. run the command cat ~/.kube/config
-2. copy and paste the output and save it as a local file called kubeconfig.txt
-3. Click on the "manage Jenkins" cog icon at the top right of the screen
-4. In the "Security" section click on "Configure credentials"
-5. Click on "(global)" in the domains column
-6. Click on the "+ Add Credentials" button
-7. Set the Kind to "Secret file"
-8. Upload the file
-9. give it a name of kubeconfig
-10. click on create
+## Step 3 — Store the database password in Jenkins
 
-## Step 4 - create a pipeline
+Passwords should never be hardcoded in source files. Jenkins has a built-in credentials store that lets us securely pass secrets to our pipeline at build time.
 
-1. Click on the Jenkins icon at the top left to get to the home page.
-2. Click on "Create a job"
-3. Give the job the name "bam-building" and choose "Pipeline" as the item type, then click on OK
-4. Scroll down to the Pipeline section and change the Definition to "Pipeline script from SCM"
-5. Set the SCM to "Git"
-6. Set the repository URL to "https://github.com/Neueda-Technologies/microservices-bam"
-7. Scroll down to the Branches to build section and set this to "main"
-8. Scroll down to the Script Path and set this to "07 - jenkins files/bam-building-jenkinsfile"
-9. Leave all other settings at the default and click on Save
+1. Click the **Manage Jenkins** icon (gear/cog) in the left sidebar
+2. In the **Security** section, click **Credentials**
+3. Click **(global)** in the Domains column
+4. Click the **+ Add Credentials** button
+5. Fill in the form:
+   - **Kind:** Secret text
+   - **Scope:** Global
+   - **Secret:** `pass123!` (your database password)
+   - **ID:** `DBPASSWORD`
+6. Click **Create**
 
-## Step 5 - run the pipeline
+## Step 4 — Store the Kubernetes config in Jenkins
 
-We will pretend that there has been a change to the REPO and we now want to deploy this change. The pipeline will pull the latest version of main, build a new image and deploy it to our Kubernetes cluster.
+Jenkins needs access to your Kubernetes cluster to deploy containers. We'll upload your kubeconfig file as a credential.
 
-NOTE - before starting this section you may wish to run `watch kubectl get po` to see the new container being deployed
+1. In your terminal, run:
 
-1. Click on the Build now button on the left menu
+```bash
+cat ~/.kube/config
+```
 
-Then to watch the logs:
+2. Copy the entire output and save it to a file called `kubeconfig.txt` on your local machine
+3. Back in Jenkins, go to **Manage Jenkins** > **Credentials** > **(global)** > **+ Add Credentials**
+4. Fill in the form:
+   - **Kind:** Secret file
+   - **File:** upload `kubeconfig.txt`
+   - **ID:** `kubeconfig`
+5. Click **Create**
 
-2. Click on the timestamp for the build id in the builds window below the left menu
-3. Click on console output from the left menu
+## Step 5 — Create the pipeline
 
-## Step 6 - final checks
+Now we'll create a pipeline job that points to the Jenkinsfile in our repository.
 
-1. Get the name of the current pod with `kubectl get po`
-2. Find out which version of the pod is running with `kubectl describe po <pod_name>`
-3. Note that this will probably be version 1 - it's the first time the pipeline ran so the build number is 1. 
-4. Run the pipeline again and repeat the exercise, the image should now be version 2. 
+1. Click the **Jenkins** logo (top left) to go to the dashboard
+2. Click **New Item** (or "Create a job")
+3. Enter the name `bam-building`, select **Pipeline**, and click **OK**
+4. Scroll down to the **Pipeline** section
+5. Change **Definition** to `Pipeline script from SCM`
+6. Set **SCM** to `Git`
+7. Set **Repository URL** to `https://github.com/Neueda-Technologies/microservices-bam`
+8. Under **Branches to build**, set to `main`
+9. Set **Script Path** to `07 - jenkins files/bam-building-jenkinsfile`
+10. Click **Save**
+
+**What just happened?** You told Jenkins: "When I trigger a build, pull the code from this Git repo, find the Jenkinsfile at this path, and execute the pipeline defined in it."
+
+## Step 6 — Understand the Jenkinsfile
+
+Before running the pipeline, take a moment to read through the Jenkinsfile at `07 - jenkins files/bam-building-jenkinsfile`. It defines these stages:
+
+| Stage | What it does |
+|-------|-------------|
+| **GetFromGithub** | Pulls the latest code from the `main` branch |
+| **Ensure Maven is runnable** | Makes the Maven wrapper script executable |
+| **Maven Unit tests** | Runs the unit tests — the build fails here if any test fails |
+| **Maven build** | Compiles the application and packages it as a JAR |
+| **Docker image build** | Builds a Docker image tagged with the Jenkins build number |
+| **Load docker image into k8s cluster** | Pushes the image to the local Docker registry |
+| **Update k8s deployment** | Tells Kubernetes to update the running pod to use the new image |
+
+## Step 7 — Run the pipeline
+
+We'll simulate a deployment — the pipeline will pull the latest code, build a new Docker image, and deploy it.
+
+**Tip:** Open a second terminal and run this to watch pods update in real time:
+
+```bash
+watch kubectl get po
+```
+
+1. In Jenkins, click **Build Now** in the left menu
+2. A new build will appear under **Build History** (bottom left) — click the build number (e.g. `#1`)
+3. Click **Console Output** in the left menu to watch the logs
+
+Wait for the build to complete. You should see `Finished: SUCCESS` at the bottom.
+
+If the build fails, check the console output for the error message — see the **Troubleshooting** section below.
+
+## Step 8 — Verify the deployment
+
+1. Check the running pods:
+
+```bash
+kubectl get po
+```
+
+2. Describe the pod to see which image version it's running:
+
+```bash
+kubectl describe po <pod-name> | grep Image:
+```
+
+The image tag should match the Jenkins build number (e.g. `bam-building:1`).
+
+3. **Run the pipeline again** (click Build Now). After it completes, describe the pod again — the image tag should now be `bam-building:2`.
+
+This demonstrates the CI/CD cycle: every time you trigger a build, a new version is built, tested, and deployed automatically.
+
+## Troubleshooting
+
+| Problem | Likely cause | Fix |
+|---------|-------------|-----|
+| Jenkins won't start | Service not installed or port 8080 in use | Run `sudo systemctl status jenkins` to check. If port conflict, check with `sudo lsof -i :8080` |
+| "Permission denied" on mvnw | File not executable | The pipeline handles this, but you can manually run `chmod a+x mvnw` |
+| Maven build fails | Missing dependencies or test failure | Read the console output — look for `BUILD FAILURE` and the error above it |
+| Docker build fails | Docker daemon not running | Run `sudo systemctl start docker` |
+| Docker push fails | Local registry not running on port 5001 | Verify with `curl http://localhost:5001/v2/_catalog` |
+| kubectl fails | Kubeconfig credential missing or incorrect | Re-do Step 4 and make sure the ID is exactly `kubeconfig` |
+| Pod stays in CrashLoopBackOff | Database not running or wrong password | Check DB is up with `docker ps`, verify the DBPASSWORD credential matches |
